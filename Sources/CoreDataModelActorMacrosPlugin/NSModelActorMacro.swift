@@ -58,11 +58,7 @@ extension NSModelActorMacro: MemberMacro {
       
       public init(container: CoreData.NSPersistentContainer) {
         let context = container.newBackgroundContext()
-        if #available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, macCatalyst 17.0, *) {
-            modelExecutor = CoreDataModelActor.NSModelObjectContextExecutorNew(context: context)
-        } else {
-            modelExecutor = CoreDataModelActor.NSModelObjectContextExecutorLegacy(context: context)
-        }
+        modelExecutor = CoreDataModelActor.NSModelObjectContextExecutorFactory.makeExecutor(context: context)
         modelContainer = container
       }
       """,

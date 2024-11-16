@@ -13,15 +13,34 @@ import CoreDataModelActorMacros
 
 @NSModelActor
 actor DocumentsRepository {
-    func toggleFavorite(objectURIs: [URL]) async throws {
-        let documents: [CDDocument] = await modelContext.objects(withURIRepresentations: objectURIs)
-
-        for document in documents {
-            document.isFavorite.toggle()
-        }
-
-        try modelContext.saveIfNeeded()
+    func toggleFavorite(objectID: NSManagedObjectID) async throws {
+        guard let document = try modelContext.existingObject(with: objectID) as? Item else { return }
+        document.timestamp = .now
+        try modelContext.save()
     }
+}
+```
+
+Or, if you don't want to use the macro:
+
+```swift
+import CoreData
+import CoreDataModelActor
+
+actor DocumentsRepository: NSModelActor {
+    let modelContainer: NSPersistentContainer
+    let modelExecutor: any CoreDataModelActor.NSModelObjectContextExecutor
+
+    init(container: NSPersistentContainer) {
+        self.modelExecutor = NSModelObjectContextExecutorFactory.makeExecutor(context: container.newBackgroundContext())
+        self.modelContainer = container
+    }
+    
+    func toggleFavorite(objectID: NSManagedObjectID) async throws {
+        guard let document = try modelContext.existingObject(with: objectID) as? Item else { return }
+        document.timestamp = .now
+        try modelContext.save()
+    }    
 }
 ```
 

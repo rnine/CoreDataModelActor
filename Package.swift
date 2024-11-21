@@ -46,5 +46,6 @@ let package = Package(
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
             ]
         ),
-    ]
+    ],
+    swiftLanguageModes: [.v6]
 )

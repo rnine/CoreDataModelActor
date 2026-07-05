@@ -36,6 +36,7 @@ let package = Package(
         .target(
             name: "CoreDataModelActorMacros",
             dependencies: [
+                "CoreDataModelActor",
                 "CoreDataModelActorMacrosPlugin",
             ]
         ),
